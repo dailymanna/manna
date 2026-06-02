@@ -10,7 +10,7 @@
 
 <script setup>
 import { useRoute } from 'vue-router'
-import { onMounted } from 'vue';
+import { onMounted, onUnmounted } from 'vue';
 import { useUiStore } from '@/stores/ui'
 import AccountRightPanel from '@/components/account/AccountRightPanel.vue';
 import { User } from '@lucide/vue';
