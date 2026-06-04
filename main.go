@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"embed"
 	_ "embed"
@@ -12,6 +13,8 @@ import (
 	"github.com/dailymanna/manna/internal/app"
 	"github.com/dailymanna/manna/internal/utils"
 	"github.com/wailsapp/wails/v3/pkg/application"
+	"github.com/wailsapp/wails/v3/pkg/updater"
+	"github.com/wailsapp/wails/v3/pkg/updater/providers/github"
 )
 
 // Wails uses Go's `embed` package to embed the frontend files into the binary.
@@ -49,7 +52,9 @@ func main() {
 	cfg.FS = assets
 	cfg.DB = db
 	cfg.ConfigPath = appDir
+
 	app := app.NewMannaApp(cfg)
+
 	// Create context menu
 	contextMenu := app.ContextMenu.New()
 	contextMenu.Add("Add Note").OnClick(func(ctx *application.Context) {})
@@ -58,6 +63,21 @@ func main() {
 
 	// Register with ID
 	app.ContextMenu.Add("verse-ctx-menu", contextMenu)
+
+	// Auto updater
+	gh, _ := github.New(github.Config{
+		Repository: "dailymanna/manna",
+		Prerelease: true,
+	})
+	if err := app.Updater.Init(updater.Config{
+		CurrentVersion: "0.0.0-alpha-1",
+		Providers:      []updater.Provider{gh},
+	}); err != nil {
+		log.Fatal(err)
+	}
+	if err := app.Updater.CheckAndInstall(context.Background()); err != nil {
+		log.Printf("error during update: %v", err)
+	}
 
 	// Run the application. This blocks until the application has been exited.
 	err = app.Run()
