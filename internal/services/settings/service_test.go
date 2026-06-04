@@ -3,13 +3,17 @@ package settings
 import (
 	"database/sql"
 	"fmt"
+	"path/filepath"
 	"testing"
 
+	"github.com/dailymanna/manna/internal/utils"
 	_ "modernc.org/sqlite"
 )
 
 func TestSetupOfflineCrossReferences(t *testing.T) {
-	dbPath := "/home/alwin/Sandbox/src/dailymanna/manna/tmp/manna/data/manna.db"
+	utils.Load()
+	appDir := utils.GetAppConfigDir()
+	dbPath := filepath.Join(appDir, "data", "persistence", "manna.db")
 	dbPathWithOptions := fmt.Sprintf("%s?_pragma=journal_mode(WAL)&_pragma=synchronous(NORMAL)&_pragma=cache_size(-64000)", dbPath)
 	db, err := sql.Open("sqlite", dbPathWithOptions)
 	if err != nil {

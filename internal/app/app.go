@@ -26,8 +26,9 @@ func init() {
 }
 
 type Config struct {
-	FS fs.FS
-	DB *sql.DB
+	FS         fs.FS
+	DB         *sql.DB
+	ConfigPath string
 }
 
 func NewMannaApp(cfg *Config) *application.App {

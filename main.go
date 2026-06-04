@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 
 	"github.com/dailymanna/manna/internal/app"
+	"github.com/dailymanna/manna/internal/utils"
 	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
@@ -25,19 +26,17 @@ var assets embed.FS
 // and starts a goroutine that emits a time-based event every second. It subsequently runs the application and
 // logs any error that might occur.
 func main() {
-
-	dbPath := "./tmp/manna/data/manna.db"
-	appEnv, appEnvfound := os.LookupEnv("APP_ENV")
-	developmentMode := true
-	if !appEnvfound {
-		appEnv = "production"
-		developmentMode = false
+	utils.Load()
+	appDir := utils.GetAppConfigDir()
+	err := os.MkdirAll(appDir, 0755)
+	if err != nil {
+		log.Fatalf("unable to create the directory %s and failing with error: %v", appDir, err)
 	}
-	log.Printf("Running manna in %s mode", appEnv)
-	if developmentMode {
-		if err := os.MkdirAll(filepath.Dir(dbPath), 0755); err != nil {
-			log.Fatalf("failed to create db directory: %v", err)
-		}
+
+	dbPath := filepath.Join(appDir, "data", "persistence", "manna.db")
+	err = os.MkdirAll(filepath.Dir(dbPath), 0755)
+	if err != nil {
+		log.Fatalf("failed to create db directory: %v", err)
 	}
 	dbPathWithOptions := fmt.Sprintf("%s?_pragma=journal_mode(WAL)&_pragma=synchronous(NORMAL)&_pragma=cache_size(-64000)", dbPath)
 	db, err := sql.Open("sqlite", dbPathWithOptions)
@@ -49,6 +48,7 @@ func main() {
 	cfg := new(app.Config)
 	cfg.FS = assets
 	cfg.DB = db
+	cfg.ConfigPath = appDir
 	app := app.NewMannaApp(cfg)
 	// Create context menu
 	contextMenu := app.ContextMenu.New()
