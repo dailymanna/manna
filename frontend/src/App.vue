@@ -26,7 +26,11 @@
 
       <div class="center-content">
         <RouterView v-slot="{ Component }">
-          <Transition name="view-fade" mode="out-in">
+          <!-- <Transition name="view-fade" mode="out-in"> -->
+          <Transition v-if="ui.rightPanelOpen && !ui.disableRightPanel">
+            <component :is="Component" :key="$route.path" />
+          </Transition>
+          <Transition name="view-fade" mode="out-in" v-else>
             <component :is="Component" :key="$route.path" />
           </Transition>
         </RouterView>
