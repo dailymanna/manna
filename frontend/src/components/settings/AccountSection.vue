@@ -36,6 +36,12 @@
          @click="signOut" />
     </S>
 
+    <S type="group" label="Upgrade">
+      <S type="action" label="Upgrade Manna"
+         :hint="upgradeStatus"
+         button-label="Check for updates"
+         @click="upgradeManna" />
+    </S>
     <S type="group" label="Danger Zone">
       <S type="action" label="Delete account"
          hint="Permanently deletes your Hub account, posts and shared notes. Local data is kept."
@@ -46,12 +52,16 @@
   </div>
 </template>
 <script setup>
-import { ref, computed } from 'vue'
-import S from './SettingPrimitives.vue'
+import { ref, computed, onMounted } from 'vue'
+import S from '@/components/settings/SettingPrimitives.vue'
+import { UpgradeMannaApp } from '@@/bindings/github.com/dailymanna/manna/internal/services/settings/settingsservice'
+import { Events } from '@wailsio/runtime'
 const displayName = ref('James Reuben')
 const email       = ref('james@example.com')
 const bio         = ref('')
 const editing     = ref(false)
+const upgradeStatus = ref('Check for a new version of Manna.')
+const isUpgrading = ref(false)
 const initials    = computed(() =>
   displayName.value.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2)
 )
@@ -59,6 +69,21 @@ function saveProfile()    { editing.value = false }
 function changePassword() { console.log('Change password') }
 function signOut()        { console.log('Sign out') }
 function deleteAccount()  { console.log('Delete account') }
+const upgradeManna = async () => {
+
+  console.log('Checking for upgrades')
+  await UpgradeMannaApp()
+    .then((resp) => {})
+    .catch((err) => {
+      console.log("Found error when upgrading")
+    })
+}
+
+onMounted(() => {
+  const upgradeStatusOfManna = Events.On('manna-upgrade-event', (event) => {
+    upgradeStatus.value = '${event.data[status]}'
+  })
+})
 </script>
 <style scoped>
 .section { display: flex; flex-direction: column; }

@@ -3,6 +3,7 @@ package settings
 import (
 	"archive/zip"
 	"bufio"
+	"context"
 	"database/sql"
 	"fmt"
 	"io"
@@ -11,8 +12,11 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
+	"github.com/wailsapp/wails/v3/pkg/updater"
+	"github.com/wailsapp/wails/v3/pkg/updater/providers/github"
 )
 
 type SettingsServiceConfig struct {
@@ -24,6 +28,8 @@ type SettingsServiceConfig struct {
 func NewSettingsService(cfg *SettingsServiceConfig) *SettingsService {
 	ss := new(SettingsService)
 	ss.db = cfg.DB
+	ss.app = cfg.App
+	ss.dataFS = cfg.DataFS
 	return ss
 }
 
@@ -162,4 +168,43 @@ func (ss *SettingsService) executeSQLiteStream(sqlStream io.Reader) error {
 	}
 
 	return nil
+}
+
+func (ss *SettingsService) UpgradeMannaApp() error {
+	// Auto updater
+	gh, _ := github.New(github.Config{
+		Repository: "dailymanna/manna",
+		Prerelease: true,
+	})
+	if err := ss.app.Updater.Init(updater.Config{
+		CurrentVersion: "0.0.0-alpha-1",
+		Providers:      []updater.Provider{gh},
+	}); err != nil {
+		log.Fatal(err)
+	}
+	if err := ss.app.Updater.CheckAndInstall(context.Background()); err != nil {
+		log.Printf("error during update: %v", err)
+	}
+
+	tckr := time.NewTicker(1 * time.Second)
+	done := make(chan bool)
+	for {
+		select {
+		case <-done:
+			// Exit the goroutine when the done signal is received
+			fmt.Println("Worker received done signal. Exiting.")
+			return nil
+		case t := <-tckr.C:
+			// Process the tick (ticker.C receives the current time)
+			fmt.Println("Tick at", t.Format("15:04:05.000"))
+			state := ss.app.Updater.State()
+			ss.app.Event.Emit("manna-upgrade-event", map[string]any{
+				"status": state,
+			})
+			if state == "ready" {
+				done <- true
+			}
+
+		}
+	}
 }

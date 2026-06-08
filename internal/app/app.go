@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/dailymanna/manna/internal/services/bible"
+	"github.com/dailymanna/manna/internal/services/settings"
 	"github.com/pressly/goose/v3"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
@@ -70,7 +71,15 @@ func NewMannaApp(cfg *Config) *application.App {
 	}
 	bibleSvc := bible.NewBibleService(bibleSvcCfg)
 
+	settingsCfg := &settings.SettingsServiceConfig{
+		App:    app,
+		DataFS: cfg.FS,
+		DB:     cfg.DB,
+	}
+	settingsSvc := settings.NewSettingsService(settingsCfg)
+
 	app.RegisterService(application.NewService(bibleSvc))
+	app.RegisterService(application.NewService(settingsSvc))
 
 	m := newMenu(app)
 
