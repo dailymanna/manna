@@ -17,8 +17,8 @@
             <div class="rp-section">
                 <div class="rp-section-label" @click="printy">Cross-References</div>
                 <div class="cross-ref" v-for="refer in crossReferences" :key="refer.id">
-                    <span class="cross-ref-text">{{ refer.to_book }} {{ refer.to_chapter }}:{{ refer.to_verse_start }}-{{ refer.to_verse_end }}</span>
-                    <!-- <span class="cross-ref-text">{{ ref.snippet }}</span> -->
+                    <span class="cross-ref-tag">{{ refer.to_book }} {{ refer.to_chapter }}:{{ refer.to_verse_start }}-{{ refer.to_verse_end }}</span>
+                    <span class="cross-ref-text">{{ refer.to_verse_text }}</span>
                 </div>
                 <!-- <div class="cross-ref" v-for="ref in crossRefs" :key="ref.ref">
                     <span class="cross-ref-tag">{{ ref.ref }}</span>
