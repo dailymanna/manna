@@ -33,6 +33,9 @@ func NewBibleService(cfg *BibleServiceConfig) *BibleService {
 			panic(err)
 		}
 	}
+	for _, bb := range bs.bibleBooks {
+		fmt.Println(bb)
+	}
 	return bs
 }
 
@@ -49,26 +52,52 @@ type BibleService struct {
 }
 
 type GetCrossReferencesInput struct {
-	Book        string
-	Chapter     int
-	VerseNumber int
+	Book        string `json:"book"`
+	Chapter     int    `json:"chapter"`
+	VerseNumber int    `json:"verse_number"`
 }
 
 type GetCrossReferencesOutput struct {
 	CrossReferences []*CrossReference `json:"cross_references"`
 }
 
-func (bs *BibleService) getCrossReferences(input *GetCrossReferencesInput) (*GetCrossReferencesOutput, error) {
+type CrossReference struct {
+	ID           int    `json:"id"`
+	FromBook     string `json:"from_book"`
+	FromChapter  int    `json:"from_chapter"`
+	FromVerse    int    `json:"from_verse"`
+	ToBook       string `json:"to_book"`
+	ToChapter    int    `json:"to_chapter"`
+	ToVerseStart int    `json:"to_verse_start"`
+	ToVerseEnd   int    `json:"to_verse_end"`
+	Votes        int    `json:"votes"`
+}
+
+func (bs *BibleService) GetCrossReferences(input *GetCrossReferencesInput) (*GetCrossReferencesOutput, error) {
 	tableName := "cross_references"
 	fmt.Println("Book:", input.Book)
-	query := fmt.Sprintf("select * from %s where from_book = ? AND from_chapter = ? AND from_verse = ?;", tableName)
+	query := fmt.Sprintf("select * from %s where from_book = ? AND from_chapter = ? AND from_verse = ? ORDER BY ID ASC;", tableName)
 	rows, err := bs.db.Query(query, input.Book, input.Chapter, input.VerseNumber)
 	if err != nil {
 		log.Printf("Error when querying: %v", err)
 		return nil, err
 	}
-	fmt.Println("Rows", rows)
-	return nil, nil
+	var refs []*CrossReference
+	for rows.Next() {
+		ref := new(CrossReference)
+		err := rows.Scan(&ref.ID, &ref.FromBook, &ref.FromChapter, &ref.FromVerse, &ref.ToBook, &ref.ToChapter, &ref.ToVerseStart, &ref.ToVerseEnd, &ref.Votes)
+		if err != nil {
+			log.Printf("error when scanning the results from table %s: %v", tableName, err)
+			continue
+		}
+		refs = append(refs, ref)
+	}
+	result := &GetCrossReferencesOutput{
+		CrossReferences: refs,
+	}
+	fmt.Printf("Count of References: %d\n", len(refs))
+
+	return result, nil
 }
 
 type Reference struct {
@@ -87,7 +116,7 @@ type GetCrossReferencesResult struct {
 	References []*Reference `json:"references"`
 }
 
-func (bs *BibleService) GetCrossReferences(book string, chapterNum, verseNum int) (*GetCrossReferencesResult, error) {
+func (bs *BibleService) getCrossReferences(book string, chapterNum, verseNum int) (*GetCrossReferencesResult, error) {
 	tableName := "cross_references"
 	fmt.Println("Book:", book)
 	query := fmt.Sprintf("select * from %s where from_book = ? AND from_chapter = ? AND from_verse = ?;", tableName)

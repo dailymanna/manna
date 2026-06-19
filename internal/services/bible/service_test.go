@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/dailymanna/manna/internal/utils"
+	_ "modernc.org/sqlite"
 )
 
 func TestBibleService_getCrossReferences(t *testing.T) {
@@ -19,14 +20,24 @@ func TestBibleService_getCrossReferences(t *testing.T) {
 		t.Fatalf("failed to connect to DB: %v", err)
 	}
 	defer db.Close()
-	cfg := BibleServiceConfig{
-		DB: db,
+	// cfg := BibleServiceConfig{
+	// 	DB:     db,
+	// 	App:    nil,
+	// 	DataFS: nil,
+	// }
+	// svc := NewBibleService(&cfg)
+	svc := BibleService{
+		db: db,
 	}
-	svc := NewBibleService(&cfg)
-	inp := GetCrossReferencesInput{}
-	out, err := svc.getCrossReferences(&inp)
+	inp := GetCrossReferencesInput{
+		Book:        "Genesis",
+		Chapter:     1,
+		VerseNumber: 2,
+	}
+	out, err := svc.GetCrossReferences(&inp)
 	if err != nil {
 		t.Fatalf("expected err to be nil but was %v", err)
 	}
-	fmt.Println("Out", out)
+	t.Logf("Out: %v", out)
+	t.FailNow()
 }
