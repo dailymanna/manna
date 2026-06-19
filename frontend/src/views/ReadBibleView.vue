@@ -104,7 +104,7 @@ const onVerseClick = async (num) => {
   
   await GetCrossReferences(selectedBook.value, selectedChapter.value, Number(selectedVerse.value.num)).then((result) => {
     crossReferences.value = result.references
-    console.log("References:", crossReferences)
+    console.log("References:", crossReferences.value)
   }).catch(async (err) => {
     console.log("No cross references found")
   })

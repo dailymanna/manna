@@ -48,8 +48,27 @@ type BibleService struct {
 	db                    *sql.DB
 }
 
-type GetCrossReferencesResult struct {
-	References []*Reference `json:"references"`
+type GetCrossReferencesInput struct {
+	Book        string
+	Chapter     int
+	VerseNumber int
+}
+
+type GetCrossReferencesOutput struct {
+	CrossReferences []*CrossReference `json:"cross_references"`
+}
+
+func (bs *BibleService) getCrossReferences(input *GetCrossReferencesInput) (*GetCrossReferencesOutput, error) {
+	tableName := "cross_references"
+	fmt.Println("Book:", input.Book)
+	query := fmt.Sprintf("select * from %s where from_book = ? AND from_chapter = ? AND from_verse = ?;", tableName)
+	rows, err := bs.db.Query(query, input.Book, input.Chapter, input.VerseNumber)
+	if err != nil {
+		log.Printf("Error when querying: %v", err)
+		return nil, err
+	}
+	fmt.Println("Rows", rows)
+	return nil, nil
 }
 
 type Reference struct {
@@ -64,8 +83,13 @@ type Reference struct {
 	Votes        int    `json:"votes"`
 }
 
+type GetCrossReferencesResult struct {
+	References []*Reference `json:"references"`
+}
+
 func (bs *BibleService) GetCrossReferences(book string, chapterNum, verseNum int) (*GetCrossReferencesResult, error) {
 	tableName := "cross_references"
+	fmt.Println("Book:", book)
 	query := fmt.Sprintf("select * from %s where from_book = ? AND from_chapter = ? AND from_verse = ?;", tableName)
 	rows, err := bs.db.Query(query, book, chapterNum, verseNum)
 	if err != nil {
@@ -85,6 +109,7 @@ func (bs *BibleService) GetCrossReferences(book string, chapterNum, verseNum int
 	result := &GetCrossReferencesResult{
 		References: refs,
 	}
+	fmt.Printf("References: %v\n", refs)
 	return result, nil
 }
 
