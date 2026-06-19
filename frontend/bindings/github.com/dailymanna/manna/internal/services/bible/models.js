@@ -10,35 +10,161 @@ import { Create as $Create } from "@wailsio/runtime";
 // @ts-ignore: Unused imports
 import * as time$0 from "../../../../../../time/models.js";
 
-export class GetCrossReferencesResult {
+export class CrossReference {
     /**
-     * Creates a new GetCrossReferencesResult instance.
-     * @param {Partial<GetCrossReferencesResult>} [$$source = {}] - The source object to create the GetCrossReferencesResult.
+     * Creates a new CrossReference instance.
+     * @param {Partial<CrossReference>} [$$source = {}] - The source object to create the CrossReference.
      */
     constructor($$source = {}) {
-        if (!("references" in $$source)) {
+        if (!("id" in $$source)) {
             /**
              * @member
-             * @type {(Reference | null)[]}
+             * @type {number}
              */
-            this["references"] = [];
+            this["id"] = 0;
+        }
+        if (!("from_book" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["from_book"] = "";
+        }
+        if (!("from_chapter" in $$source)) {
+            /**
+             * @member
+             * @type {number}
+             */
+            this["from_chapter"] = 0;
+        }
+        if (!("from_verse" in $$source)) {
+            /**
+             * @member
+             * @type {number}
+             */
+            this["from_verse"] = 0;
+        }
+        if (!("to_book" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["to_book"] = "";
+        }
+        if (!("to_chapter" in $$source)) {
+            /**
+             * @member
+             * @type {number}
+             */
+            this["to_chapter"] = 0;
+        }
+        if (!("to_verse_start" in $$source)) {
+            /**
+             * @member
+             * @type {number}
+             */
+            this["to_verse_start"] = 0;
+        }
+        if (!("to_verse_end" in $$source)) {
+            /**
+             * @member
+             * @type {number}
+             */
+            this["to_verse_end"] = 0;
+        }
+        if (!("votes" in $$source)) {
+            /**
+             * @member
+             * @type {number}
+             */
+            this["votes"] = 0;
         }
 
         Object.assign(this, $$source);
     }
 
     /**
-     * Creates a new GetCrossReferencesResult instance from a string or object.
+     * Creates a new CrossReference instance from a string or object.
      * @param {any} [$$source = {}]
-     * @returns {GetCrossReferencesResult}
+     * @returns {CrossReference}
+     */
+    static createFrom($$source = {}) {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new CrossReference(/** @type {Partial<CrossReference>} */($$parsedSource));
+    }
+}
+
+export class GetCrossReferencesInput {
+    /**
+     * Creates a new GetCrossReferencesInput instance.
+     * @param {Partial<GetCrossReferencesInput>} [$$source = {}] - The source object to create the GetCrossReferencesInput.
+     */
+    constructor($$source = {}) {
+        if (!("book" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["book"] = "";
+        }
+        if (!("chapter" in $$source)) {
+            /**
+             * @member
+             * @type {number}
+             */
+            this["chapter"] = 0;
+        }
+        if (!("verse_number" in $$source)) {
+            /**
+             * @member
+             * @type {number}
+             */
+            this["verse_number"] = 0;
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new GetCrossReferencesInput instance from a string or object.
+     * @param {any} [$$source = {}]
+     * @returns {GetCrossReferencesInput}
+     */
+    static createFrom($$source = {}) {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new GetCrossReferencesInput(/** @type {Partial<GetCrossReferencesInput>} */($$parsedSource));
+    }
+}
+
+export class GetCrossReferencesOutput {
+    /**
+     * Creates a new GetCrossReferencesOutput instance.
+     * @param {Partial<GetCrossReferencesOutput>} [$$source = {}] - The source object to create the GetCrossReferencesOutput.
+     */
+    constructor($$source = {}) {
+        if (!("cross_references" in $$source)) {
+            /**
+             * @member
+             * @type {(CrossReference | null)[]}
+             */
+            this["cross_references"] = [];
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new GetCrossReferencesOutput instance from a string or object.
+     * @param {any} [$$source = {}]
+     * @returns {GetCrossReferencesOutput}
      */
     static createFrom($$source = {}) {
         const $$createField0_0 = $$createType2;
         let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
-        if ("references" in $$parsedSource) {
-            $$parsedSource["references"] = $$createField0_0($$parsedSource["references"]);
+        if ("cross_references" in $$parsedSource) {
+            $$parsedSource["cross_references"] = $$createField0_0($$parsedSource["cross_references"]);
         }
-        return new GetCrossReferencesResult(/** @type {Partial<GetCrossReferencesResult>} */($$parsedSource));
+        return new GetCrossReferencesOutput(/** @type {Partial<GetCrossReferencesOutput>} */($$parsedSource));
     }
 }
 
@@ -156,90 +282,6 @@ export class Note {
     }
 }
 
-export class Reference {
-    /**
-     * Creates a new Reference instance.
-     * @param {Partial<Reference>} [$$source = {}] - The source object to create the Reference.
-     */
-    constructor($$source = {}) {
-        if (!("id" in $$source)) {
-            /**
-             * @member
-             * @type {number}
-             */
-            this["id"] = 0;
-        }
-        if (!("from_book" in $$source)) {
-            /**
-             * @member
-             * @type {string}
-             */
-            this["from_book"] = "";
-        }
-        if (!("from_chapter" in $$source)) {
-            /**
-             * @member
-             * @type {number}
-             */
-            this["from_chapter"] = 0;
-        }
-        if (!("from_verse" in $$source)) {
-            /**
-             * @member
-             * @type {number}
-             */
-            this["from_verse"] = 0;
-        }
-        if (!("to_book" in $$source)) {
-            /**
-             * @member
-             * @type {string}
-             */
-            this["to_book"] = "";
-        }
-        if (!("to_chapter" in $$source)) {
-            /**
-             * @member
-             * @type {number}
-             */
-            this["to_chapter"] = 0;
-        }
-        if (!("to_verse_start" in $$source)) {
-            /**
-             * @member
-             * @type {number}
-             */
-            this["to_verse_start"] = 0;
-        }
-        if (!("to_verse_end" in $$source)) {
-            /**
-             * @member
-             * @type {number}
-             */
-            this["to_verse_end"] = 0;
-        }
-        if (!("votes" in $$source)) {
-            /**
-             * @member
-             * @type {number}
-             */
-            this["votes"] = 0;
-        }
-
-        Object.assign(this, $$source);
-    }
-
-    /**
-     * Creates a new Reference instance from a string or object.
-     * @param {any} [$$source = {}]
-     * @returns {Reference}
-     */
-    static createFrom($$source = {}) {
-        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
-        return new Reference(/** @type {Partial<Reference>} */($$parsedSource));
-    }
-}
-
 /**
  * VerseKey acts as a unique, lightweight identifier for any verse in the Bible.
  * This is incredibly useful for map lookups and frontend routing.
@@ -287,7 +329,7 @@ export class VerseKey {
 }
 
 // Private type creation functions
-const $$createType0 = Reference.createFrom;
+const $$createType0 = CrossReference.createFrom;
 const $$createType1 = $Create.Nullable($$createType0);
 const $$createType2 = $Create.Array($$createType1);
 const $$createType3 = VerseKey.createFrom;

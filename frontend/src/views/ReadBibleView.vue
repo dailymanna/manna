@@ -101,9 +101,13 @@ const onVerseClick = async (num) => {
     return
   }
   selectedVerse.value = verse
-  
-  await GetCrossReferences(selectedBook.value, selectedChapter.value, Number(selectedVerse.value.num)).then((result) => {
-    crossReferences.value = result.references
+  const crInpt = {
+    book: selectedBook.value,
+    chapter: selectedChapter.value,
+    verse_number: Number(selectedVerse.value.num)
+  }
+  await GetCrossReferences(crInpt).then((result) => {
+    crossReferences.value = result.cross_references
     console.log("References:", crossReferences.value)
   }).catch(async (err) => {
     console.log("No cross references found")
