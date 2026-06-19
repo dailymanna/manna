@@ -72,6 +72,13 @@ export class CrossReference {
              */
             this["to_verse_end"] = 0;
         }
+        if (!("to_verse_text" in $$source)) {
+            /**
+             * @member
+             * @type {string}
+             */
+            this["to_verse_text"] = "";
+        }
         if (!("votes" in $$source)) {
             /**
              * @member

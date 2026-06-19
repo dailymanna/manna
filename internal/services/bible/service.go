@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/fs"
 	"log"
+	"sort"
 	"strconv"
 
 	biblepkg "github.com/dailymanna/manna/pkg/bible"
@@ -70,6 +71,7 @@ type CrossReference struct {
 	ToChapter    int    `json:"to_chapter"`
 	ToVerseStart int    `json:"to_verse_start"`
 	ToVerseEnd   int    `json:"to_verse_end"`
+	ToVerseText  string `json:"to_verse_text"`
 	Votes        int    `json:"votes"`
 }
 
@@ -92,12 +94,55 @@ func (bs *BibleService) GetCrossReferences(input *GetCrossReferencesInput) (*Get
 		}
 		refs = append(refs, ref)
 	}
+	bookIndex := make(map[string]int, len(bs.bibleBooks))
+	for i, b := range bs.bibleBooks {
+		bookIndex[b] = i
+	}
+	sort.Slice(refs, func(i, j int) bool {
+		bi, bj := bookIndex[refs[i].ToBook], bookIndex[refs[j].ToBook]
+		if bi != bj {
+			return bi < bj
+		}
+		if refs[i].ToChapter != refs[j].ToChapter {
+			return refs[i].ToChapter < refs[j].ToChapter
+		}
+		return refs[i].ToVerseStart < refs[j].ToVerseStart
+	})
+
+	for _, ref := range refs {
+		ref.ToVerseText = bs.getVerseText("KJV", ref.ToBook, ref.ToChapter, ref.ToVerseStart)
+	}
+
 	result := &GetCrossReferencesOutput{
 		CrossReferences: refs,
 	}
 	fmt.Printf("Count of References: %d\n", len(refs))
 
 	return result, nil
+}
+
+func (bs *BibleService) getVerseText(translation, book string, chapter, verse int) string {
+	for _, bbl := range bs.bibles {
+		if bbl.Version != translation {
+			continue
+		}
+		for _, bk := range bbl.Books {
+			if bk.Name != book {
+				continue
+			}
+			for _, ch := range bk.Chapters {
+				if ch.Number != chapter {
+					continue
+				}
+				for _, v := range ch.Verses {
+					if v.Verse == verse {
+						return v.Text
+					}
+				}
+			}
+		}
+	}
+	return ""
 }
 
 type Reference struct {
