@@ -51,12 +51,6 @@ type Verse struct {
 }
 
 // CrossReference connects a source verse to a target verse.
-type CrossReference struct {
-	ID          int      `json:"id"`
-	Source      VerseKey `json:"source"`
-	Target      VerseKey `json:"target"`
-	Description string   `json:"description,omitempty"` // e.g., "Prophecy fulfilled" or "Quoted in"
-}
 
 // Note represents user-generated study content or commentary.
 type Note struct {

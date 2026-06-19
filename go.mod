@@ -5,7 +5,7 @@ go 1.26.3
 require (
 	github.com/pressly/goose/v3 v3.27.1
 	github.com/stretchr/testify v1.11.1
-	github.com/wailsapp/wails/v3 v3.0.0-alpha2.103
+	github.com/wailsapp/wails/v3 v3.0.0-alpha2.104
 	golang.org/x/net v0.56.0
 	modernc.org/sqlite v1.52.0
 )
@@ -59,7 +59,7 @@ require (
 	github.com/vertica/vertica-sql-go v1.3.6 // indirect
 	github.com/wailsapp/wails/webview2 v1.0.24 // indirect
 	github.com/ydb-platform/ydb-go-genproto v0.0.0-20260428144813-1c07baab7f7b // indirect
-	github.com/ydb-platform/ydb-go-sdk/v3 v3.139.7 // indirect
+	github.com/ydb-platform/ydb-go-sdk/v3 v3.141.0 // indirect
 	github.com/ziutek/mymysql v1.5.4 // indirect
 	go.opentelemetry.io/otel v1.44.0 // indirect
 	go.opentelemetry.io/otel/trace v1.44.0 // indirect
@@ -71,7 +71,7 @@ require (
 	golang.org/x/sync v0.21.0 // indirect
 	golang.org/x/sys v0.46.0 // indirect
 	golang.org/x/text v0.38.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20260615183401-62b3387ff324 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20260618152121-87f3d3e198d3 // indirect
 	google.golang.org/grpc v1.81.1 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
