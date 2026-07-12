@@ -110,7 +110,7 @@ func (bs *BibleService) GetCrossReferences(input *GetCrossReferencesInput) (*Get
 	})
 
 	for _, ref := range refs {
-		ref.ToVerseText = bs.getVerseText("KJV", ref.ToBook, ref.ToChapter, ref.ToVerseStart)
+		ref.ToVerseText = bs.getVerseText("NKJV", ref.ToBook, ref.ToChapter, ref.ToVerseStart)
 	}
 
 	result := &GetCrossReferencesOutput{

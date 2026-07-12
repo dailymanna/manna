@@ -41,8 +41,8 @@ const ui = useUiStore()
 let selectedBook = ref('Genesis')
 let selectedChapter = ref(1)
 let selectedVerse = ref({ num: 0, text: 'No verse selected' })
-let selectedTranslation = ref('KJV')
-let defaultTranslation = ref('KJV')
+let selectedTranslation = ref('NKJV')
+let defaultTranslation = ref('NKJV')
 let listOfTranslationsAvailable = ref([])
 
 // const books    = ['Genesis','Exodus','Psalms','Proverbs','Matthew','John','Romans','Revelation']

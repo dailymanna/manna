@@ -6,10 +6,6 @@
 // @ts-ignore: Unused imports
 import { Create as $Create } from "@wailsio/runtime";
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore: Unused imports
-import * as time$0 from "../../../../../../time/models.js";
-
 export class CrossReference {
     /**
      * Creates a new CrossReference instance.
@@ -252,21 +248,21 @@ export class Note {
             /**
              * Unix timestamp for easy frontend formatting
              * @member
-             * @type {time$0.Time | null}
+             * @type {string | null}
              */
             this["created_at"] = null;
         }
         if (!("updated_at" in $$source)) {
             /**
              * @member
-             * @type {time$0.Time | null}
+             * @type {string | null}
              */
             this["updated_at"] = null;
         }
         if (!("deleted_at" in $$source)) {
             /**
              * @member
-             * @type {time$0.Time | null}
+             * @type {string | null}
              */
             this["deleted_at"] = null;
         }
